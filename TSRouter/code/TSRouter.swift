@@ -15,17 +15,17 @@ fileprivate let kTSRouterTransferStyle = "transferStyle"
 
 public class TSRouter {
     
-    static let shared: TSRouter = TSRouter()
+    public static let shared: TSRouter = TSRouter()
     private init() {}
     
     //自定义页面跳转的源vc
-    var transferOriginViewController: (()->UIViewController?)?
+    public var transferOriginViewController: (()->UIViewController?)?
     
     //自定义 present 需要创建的vc是否需要添加nav，或者nav是自定义的
-    var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
+    public var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
     
     //跳转⽅方法
-    func openUrl(_ urlStr: String?) {
+    public func openUrl(_ urlStr: String?) {
         
         //首先解析url
         if let tempStr = urlStr {
