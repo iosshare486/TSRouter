@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F51C87A620C91D9C00AE2248 /* Home.plist in Resources */ = {isa = PBXBuildFile; fileRef = F51C87A520C91D9C00AE2248 /* Home.plist */; };
-		F51C87A820C91DEF00AE2248 /* TSTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F51C87A720C91DEF00AE2248 /* TSTestViewController.swift */; };
 		F5AE273A20C77A500035FD33 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE273920C77A500035FD33 /* AppDelegate.swift */; };
-		F5AE273C20C77A500035FD33 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5AE273B20C77A500035FD33 /* ViewController.swift */; };
 		F5AE273F20C77A500035FD33 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F5AE273D20C77A500035FD33 /* Main.storyboard */; };
 		F5AE274120C77A520035FD33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F5AE274020C77A520035FD33 /* Assets.xcassets */; };
 		F5AE274420C77A520035FD33 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F5AE274220C77A520035FD33 /* LaunchScreen.storyboard */; };
@@ -39,10 +37,8 @@
 
 /* Begin PBXFileReference section */
 		F51C87A520C91D9C00AE2248 /* Home.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Home.plist; sourceTree = "<group>"; };
-		F51C87A720C91DEF00AE2248 /* TSTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSTestViewController.swift; sourceTree = "<group>"; };
 		F5AE273620C77A500035FD33 /* TSRouter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TSRouter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5AE273920C77A500035FD33 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F5AE273B20C77A500035FD33 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F5AE273E20C77A500035FD33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F5AE274020C77A520035FD33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5AE274320C77A520035FD33 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -108,8 +104,6 @@
 				F5D4835B20CE6998003B9AD1 /* code */,
 				F51C87A520C91D9C00AE2248 /* Home.plist */,
 				F5AE273920C77A500035FD33 /* AppDelegate.swift */,
-				F5AE273B20C77A500035FD33 /* ViewController.swift */,
-				F51C87A720C91DEF00AE2248 /* TSTestViewController.swift */,
 				F5AE273D20C77A500035FD33 /* Main.storyboard */,
 				F5AE274020C77A520035FD33 /* Assets.xcassets */,
 				F5AE274220C77A520035FD33 /* LaunchScreen.storyboard */,
@@ -277,9 +271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5AE273C20C77A500035FD33 /* ViewController.swift in Sources */,
 				F5AE273A20C77A500035FD33 /* AppDelegate.swift in Sources */,
-				F51C87A820C91DEF00AE2248 /* TSTestViewController.swift in Sources */,
 				F5D4835E20CE6998003B9AD1 /* TSRouterProtocol.swift in Sources */,
 				F5D4835F20CE6998003B9AD1 /* TSRouter.swift in Sources */,
 			);

@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.summary      = "this is app router"
 
   s.description  = <<-DESC
-                  这是一个路由，支持url跳转页面
+                  这是一个路由，支持url跳转页面; url定义：URLScheme://moduleName.transitionStyle/pageName?key=value....#isNeedLogin
                    DESC
   s.platform     = :ios, "8.0"
   s.homepage     = "https://www.jianshu.com/u/8a7102c0b777"
@@ -27,6 +27,8 @@ Pod::Spec.new do |s|
   s.source_files  = "TSRouter/code"
 
   s.framework  = "UIKit","Foundation"
+
+  s.swift_version = '4.0'
 
   s.requires_arc = true
 end
