@@ -9,11 +9,11 @@
 import UIKit
 
 //plist文件中的字段名
-private let kTSRouterClassName = "className"
-private let kTSRouterTransferStyle = "transferStyle"
+fileprivate let kTSRouterClassName = "className"
+fileprivate let kTSRouterTransferStyle = "transferStyle"
 
 
-class TSRouter {
+public class TSRouter {
     
     static let shared: TSRouter = TSRouter()
     private init() {}
