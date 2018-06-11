@@ -122,33 +122,34 @@ fileprivate extension TSRouter {
             parser.originViewController = self.transferOriginViewController?()
         }else {
          
-            parser.originViewController = defaultGetOriginVC()
+            debugPrint("TSRouter: transferOriginViewController is nil")
+//            parser.originViewController = defaultGetOriginVC()
         }
     }
     //获取源VC需要使用者自定义，若不自定义则通用的获取方法
-    func defaultGetOriginVC() -> UIViewController? {
-        
-        let currentAppDele = UIApplication.shared.delegate as! AppDelegate
-        
-        if currentAppDele.window?.rootViewController == nil {
-            debugPrint("TSRouter: window.rootViewController is not find")
-            return nil
-        }
-        
-        let rootVC: UIViewController = (currentAppDele.window?.rootViewController)!
-        var topVC: UIViewController?
-        if rootVC is UITabBarController {
-            topVC = (rootVC as! UITabBarController).selectedViewController
-        } else if rootVC is UINavigationController  {
-            topVC = rootVC
-        }
-        
-        while ((topVC?.presentedViewController) != nil) {
-            topVC = (topVC?.presentedViewController)!
-        }
-        
-        return topVC
-    }
+//    func defaultGetOriginVC() -> UIViewController? {
+//
+//        let currentAppDele = UIApplication.shared.delegate as! AppDelegate
+//
+//        if currentAppDele.window?.rootViewController == nil {
+//            debugPrint("TSRouter: window.rootViewController is not find")
+//            return nil
+//        }
+//
+//        let rootVC: UIViewController = (currentAppDele.window?.rootViewController)!
+//        var topVC: UIViewController?
+//        if rootVC is UITabBarController {
+//            topVC = (rootVC as! UITabBarController).selectedViewController
+//        } else if rootVC is UINavigationController  {
+//            topVC = rootVC
+//        }
+//
+//        while ((topVC?.presentedViewController) != nil) {
+//            topVC = (topVC?.presentedViewController)!
+//        }
+//
+//        return topVC
+//    }
 }
 
 // MARK: - 解析Url 相关
