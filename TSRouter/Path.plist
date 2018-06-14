@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>vc</key>
+	<dict>
+		<key>transferStyle</key>
+		<string>present</string>
+		<key>className</key>
+		<string>ViewController</string>
+	</dict>
+	<key>test</key>
+	<dict>
+		<key>transferStyle</key>
+		<string>push</string>
+		<key>className</key>
+		<string>TSTestViewController</string>
+	</dict>
+	<key>tab3</key>
+	<dict>
+		<key>transferStyle</key>
+		<string>transferTab</string>
+		<key>className</key>
+		<string>Tabbar3ViewController</string>
+	</dict>
+	<key>tab4</key>
+	<dict>
+		<key>transferStyle</key>
+		<string>specialPresent</string>
+		<key>className</key>
+		<string>Tabbar3ViewController</string>
+	</dict>
+</dict>
+</plist>
