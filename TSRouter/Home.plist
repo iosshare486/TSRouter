@@ -5,7 +5,7 @@
 	<key>vc</key>
 	<dict>
 		<key>transferStyle</key>
-		<string>push</string>
+		<string>present</string>
 		<key>className</key>
 		<string>ViewController</string>
 	</dict>
@@ -15,6 +15,20 @@
 		<string>push</string>
 		<key>className</key>
 		<string>TSTestViewController</string>
+	</dict>
+	<key>tab3</key>
+	<dict>
+		<key>transferStyle</key>
+		<string>transferTab</string>
+		<key>className</key>
+		<string>Tabbar3ViewController</string>
+	</dict>
+	<key>tab4</key>
+	<dict>
+		<key>transferStyle</key>
+		<string>specialTransfer</string>
+		<key>className</key>
+		<string>Tabbar3ViewController</string>
 	</dict>
 </dict>
 </plist>

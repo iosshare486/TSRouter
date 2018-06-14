@@ -17,38 +17,136 @@ public class TSRouter {
     
     public static let shared: TSRouter = TSRouter()
     private init() {}
+    private var blockedParser: TSParser?  //记录被打断的跳转数据，以备回调之后继续跳转（如未登录需要跳转登录时会被打断）
     
-    //自定义页面跳转的源vc
+    // 自定义页面跳转的源vc
     public var transferOriginViewController: (()->UIViewController?)?
     
-    //自定义 present 需要创建的vc是否需要添加nav，或者nav是自定义的
+    // 自定义 present 需要创建的vc是否需要添加nav，或者nav是自定义的
     public var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
     
-    //跳转⽅方法
-    public func openUrl(_ urlStr: String?) {
+    // 获取tabbar，用于切换tabbarItem
+    public var transferTabbarViewController: (()->UITabBarController)?
+    
+    // 特殊controller跳转需要开发者自定义
+    public var transferSpecialViewControllers: ((_ currentVC: UIViewController, _ path: String, _ parserDic: [String: String])->Void)?
+    
+    // 跳转页面如需依赖特殊状态（例如登录）
+    public var transferNeedRelySpecialStatus: ((_ currentVC: UIViewController)-> Bool)?
+    
+    //通用跳转方法
+    public class func openUrl(_ urlStr: String?) {
+        
+        TSRouter.shared.openUrl(urlStr)
+    }
+    
+    //直接 push vc
+    public class func routerPushVC(_ vc: UIViewController, _ animate: Bool = true) {
+        
+        TSRouter.shared.routerPushVC(vc, animate)
+    }
+    
+    //直接 present vc
+    public class func routerPresentVC(_ vc: UIViewController, _ animate: Bool = true, completion: (() -> Swift.Void)? = nil) {
+        
+        TSRouter.shared.routerPresentVC(vc, animate, completion: completion)
+    }
+    
+    //继续跳转 当跳转被打断后，调用该方法会继续上次的跳转
+    public class func continueRouter() {
+        
+        if let parser = TSRouter.shared.blockedParser {
+            TSRouter.shared.transferViewController(with: parser)
+        }
+    }
+}
+
+fileprivate extension TSRouter {
+    
+    //跳转url
+    func openUrl(_ urlStr: String?) {
         
         //首先解析url
         if let tempStr = urlStr {
             
             if let url = URL(string: tempStr) {
                 var parser = parserUrl(url: url)
-                transferViewController(parser: &parser)
+                configDataForTransferViewController(parser: &parser)
+            }else {
+                debugPrint("TSRouter: urlStr isnot url")
             }
+        }else {
+            
+            debugPrint("TSRouter: url is nil")
+        }
+    }
+    
+    //直接push VC
+    func routerPushVC(_ vc: UIViewController, _ animate: Bool = true) {
+        
+        if let originVC = self.transferOriginViewController?() {
+            
+            if originVC is UINavigationController {
+                
+                (originVC as! UINavigationController).pushViewController(vc, animated: animate)
+            }else {
+                debugPrint("TSRouter: transferOriginViewController is not UINavigationController")
+            }
+        }else {
+            debugPrint("TSRouter: transferOriginViewController is nil")
+        }
+    }
+    
+    //直接present VC
+    func routerPresentVC(_ vc: UIViewController, _ animate: Bool = true, completion: (() -> Swift.Void)? = nil) {
+        
+        if let originVC = self.transferOriginViewController?() {
+            
+            originVC.present(vc, animated: animate, completion: completion)
+        }else {
+            debugPrint("TSRouter: transferOriginViewController is nil")
         }
     }
     
 }
 
-// MARK: - 跳转相关
+// MARK: - 普通跳转相关
 fileprivate extension TSRouter {
     
-    //执行跳转
-    func transferViewController(parser: inout TSParser) {
+    //执行跳转前的数据处理
+    func configDataForTransferViewController(parser: inout TSParser) {
         
         //获取目标VC
         getActionTransferViewController(with: &parser)
         //获取源VC
         getOriginViewController(with: &parser)
+        
+        guard let originViewController = parser.originViewController else {
+            
+            debugPrint("TSRouter: originViewController is nil")
+            return
+        }
+        
+        if parser.fragment == "1" {
+            //表示跳转页面需要依赖某些状态，例如登录
+            if self.transferNeedRelySpecialStatus != nil {
+                
+                let result = self.transferNeedRelySpecialStatus!(originViewController)
+                
+                if result == false {
+                    //如果返回结果为false表示打断当前的跳转
+                    debugPrint("TSRouter: 当前跳转被打断")
+                    self.blockedParser = parser
+                    return
+                }
+            }
+        }
+        
+        transferViewController(with: parser)
+    }
+    
+    //执行跳转
+    func transferViewController(with parser: TSParser) {
         
         guard let destination = parser.destinationViewController else {
             
@@ -71,23 +169,44 @@ fileprivate extension TSRouter {
             }
             
             (originViewController as! UINavigationController).pushViewController(destination, animated: true)
-        } else {
+        } else if parser.transferStyle == .present {
             
             if (self.presentDestinationViewController != nil) {
                 
                 originViewController.present(self.presentDestinationViewController!(destination), animated: true, completion: nil)
             }else {
-                originViewController.present(destination, animated: true, completion: nil)
+                if self.presentDestinationViewController != nil {
+                    
+                    originViewController.present(self.presentDestinationViewController!(destination), animated: true, completion: nil)
+                }else {
+                    originViewController.present(destination, animated: true, completion: nil)
+                }
+                
             }
+        }else if parser.transferStyle == .tabTransfer {
+            
+            self.transferTabbarSelectVC(with: parser)
+            
+        }else if parser.transferStyle == .specialTransfer {
+            
+            if self.transferSpecialViewControllers != nil {
+                
+                self.transferSpecialViewControllers!(originViewController, parser.path, parser.URLParser)
+            }else {
+                debugPrint("TSRouter: transferSpecialViewControllers is nil")
+            }
+        }else {
+            debugPrint("TSRouter: transferStyle is nil")
         }
+        
     }
     
     //根据parser获取对应的vc
     func getActionTransferViewController(with parser: inout TSParser) {
         
-        let filepath = Bundle.main.path(forResource: parser.host, ofType: "plist")
+        let filepath = Bundle.main.path(forResource: parser.path, ofType: "plist")
         let dic = NSDictionary(contentsOfFile: filepath!)
-        let rule = dic?.object(forKey: parser.path) as? NSDictionary
+        let rule = dic?.object(forKey: parser.host) as? NSDictionary
         
         if rule == nil {
             debugPrint("TSRouter: path is not find")
@@ -95,6 +214,7 @@ fileprivate extension TSRouter {
         }
         
         let class_name = rule!.object(forKey: kTSRouterClassName) as! String
+        
         let cls: AnyClass? = NSClassFromString(Bundle.main.tsrouter_nameSpace + "." + class_name)
         guard let clsType = cls as? UIViewController.Type else {
             debugPrint("TSRouter: get class is not viewController")
@@ -102,15 +222,18 @@ fileprivate extension TSRouter {
         }
         
         let viewController = clsType.init()
-        
+        viewController.hidesBottomBarWhenPushed = true
         if viewController.conforms(to: TSRouterProtocol.self) {
             
             (viewController as! TSRouterProtocol).initWithRouter(routerData: parser.URLParser)
         }
         
+        parser.destinationViewControllerName = class_name
+        
         parser.destinationViewController = viewController
+        
         if let modelStr = rule!.object(forKey: kTSRouterTransferStyle) {
-            parser.transferStyle = TSRouterTransferStyle.init(rawValue: modelStr as! String) ?? .push
+            parser.transferStyle = TSRouterTransferStyle.init(rawValue: modelStr as! String)
         }
     }
     
@@ -123,33 +246,64 @@ fileprivate extension TSRouter {
         }else {
          
             debugPrint("TSRouter: transferOriginViewController is nil")
-//            parser.originViewController = defaultGetOriginVC()
         }
     }
-    //获取源VC需要使用者自定义，若不自定义则通用的获取方法
-//    func defaultGetOriginVC() -> UIViewController? {
-//
-//        let currentAppDele = UIApplication.shared.delegate as! AppDelegate
-//
-//        if currentAppDele.window?.rootViewController == nil {
-//            debugPrint("TSRouter: window.rootViewController is not find")
-//            return nil
-//        }
-//
-//        let rootVC: UIViewController = (currentAppDele.window?.rootViewController)!
-//        var topVC: UIViewController?
-//        if rootVC is UITabBarController {
-//            topVC = (rootVC as! UITabBarController).selectedViewController
-//        } else if rootVC is UINavigationController  {
-//            topVC = rootVC
-//        }
-//
-//        while ((topVC?.presentedViewController) != nil) {
-//            topVC = (topVC?.presentedViewController)!
-//        }
-//
-//        return topVC
-//    }
+}
+
+// MARK: - tabbar的切换
+fileprivate extension TSRouter {
+    
+    func transferTabbarSelectVC(with parser: TSParser) {
+        
+        if let tabbar = self.transferTabbarViewController?(), let viewcontrollers = tabbar.viewControllers, let className = parser.destinationViewControllerName, let vcclass = NSClassFromString(Bundle.main.tsrouter_nameSpace + "." + className) {
+            
+            if let currentSelect = tabbar.selectedViewController {
+                
+                if currentSelect.presentedViewController != nil {
+                    currentSelect.presentedViewController?.dismiss(animated: false, completion: nil)
+                }
+                
+                if currentSelect is UINavigationController {
+                    
+                    (currentSelect as! UINavigationController).popToRootViewController(animated: false)
+                }
+                
+                for (i, subVC) in viewcontrollers.enumerated() {
+                    
+                    if subVC is UINavigationController {
+                        
+                        if let vc = (subVC as! UINavigationController).viewControllers.last {
+                            
+                            if vc.isKind(of: vcclass) {
+                                
+                                tabbar.selectedIndex = i
+                                return
+                            }
+                        }
+                        
+                    }else {
+                        
+                        if subVC.isKind(of: vcclass) {
+                            
+                            tabbar.selectedIndex = i
+                            return
+                        }
+                    }
+                    
+                }
+                
+                
+            }else {
+                
+                debugPrint("TSRouter: tabbarViewController selectedViewController is nil")
+            }
+            
+        }else {
+            
+            debugPrint("TSRouter: tabbar is nil")
+        }
+        
+    }
 }
 
 // MARK: - 解析Url 相关
@@ -220,15 +374,19 @@ fileprivate class TSParser {
     var path : String = ""
     var fragment: String = ""
     var URLParser = [String: String]()
+    var destinationViewControllerName: String?
     var destinationViewController: UIViewController?
     var originViewController: UIViewController?
-    var transferStyle: TSRouterTransferStyle = .push //跳转方式 默认push
+    var transferStyle: TSRouterTransferStyle? //跳转方式
 }
 
-fileprivate enum TSRouterTransferStyle: String {
+public enum TSRouterTransferStyle: String {
     
     case push = "push"
     case present = "present"
+    case tabTransfer = "transferTab" //tabbar 切换
+    case specialTransfer = "specialTransfer" //特殊跳转
+
 }
 
 
