@@ -19,29 +19,31 @@
 > isNeedLogin: 是否需要登录支持 即url.fragment
 > 
 
-	2. public class func routerPresentVC(_ vc: UIViewController, _ animate: Bool = true, completion: (() -> Swift.Void)? = nil)
+    2. public class func routerPresentVC(_ vc: UIViewController, _ animate: Bool = true, completion: (() -> Swift.Void)? = nil)
 
 > 直接模态一个vc
 
-	3. public class func routerPushVC(_ vc: UIViewController, _ animate: Bool = true)
+    3. public class func routerPushVC(_ vc: UIViewController, _ animate: Bool = true)
 
 > 直接 push 一个vc
 
-	4. public class func continueRouter()
+    4. public class func continueRouter()
 
 > 继续跳转 当跳转被打断后，调用该方法会继续上次的跳转
 
+
 - ### 安装时使用的接口
 
-	1. var transferOriginViewController: (()->UIViewController?)?
+
+    1. var transferOriginViewController: (()->UIViewController?)?
 	
 > 获取跳转页面时需要的nav或者vc,用于push或present 该方法需要各自实现
 
-	2. var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
+    2. var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
 	
 > 模态时，创建VC时需要特殊处理，如添加导航Nav时，需要使用者自定义
 
-	3. public var transferTabbarViewController: (()->UITabBarController)?
+    3. public var transferTabbarViewController: (()->UITabBarController)?
 
 > 获取tabbar，用于切换tabbarItem
 
@@ -49,7 +51,7 @@
 	
 > 实例化需要特殊处理，无法使用通用的init方法时，需要自定义跳转方法
 
-	5. public var transferNeedRelySpecialStatus: ((_ currentVC: UIViewController)-> Bool)?
+    5. public var transferNeedRelySpecialStatus: ((_ currentVC: UIViewController)-> Bool)?
 
 > 跳转页面如需依赖特殊状态（例如登录状态）, 该闭包返回true表示状态正确可以继续跳转，返回false表示状态不正确，打断当前跳转，如需继续跳转可调用public class func continueRouter() 
 
@@ -60,7 +62,8 @@
 ### 使用说明
 
 #### 1. 首先在AppDelegate的didFinishLaunchingWithOptions方法中分别实现如下接口
-	1. var transferOriginViewController: (()->UIViewController?)?
+
+    1. var transferOriginViewController: (()->UIViewController?)?
 
 ```
 例：
@@ -90,7 +93,7 @@
         }
 ```
 
-	2. var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
+    2. var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
 
 ```
 例：
@@ -101,7 +104,7 @@
 
 ```
 
-	3. public var transferTabbarViewController: (()->UITabBarController)?
+    3. public var transferTabbarViewController: (()->UITabBarController)?
 
 ```
 例：
@@ -114,7 +117,7 @@
 
 ```
 
-	4. public var transferSpecialViewControllers: ((_ currentVC: UIViewController, _ path: String, _ parserDic: [String: String])->Void)?
+    4. public var transferSpecialViewControllers: ((_ currentVC: UIViewController, _ path: String, _ parserDic: [String: String])->Void)?
 
 ```
 例：
