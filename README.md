@@ -3,7 +3,9 @@
 ## 接口说明
 
 - ### 跳转时使用的接口
+
 	1.class func openUrl(_ url: String) 跳转方法
+	
 > url定义：URLScheme://pageName/moduleName?key=value....#isNeedLogin
 > 
 > URLScheme: appScheme 主要作用外部连接打开客户端
