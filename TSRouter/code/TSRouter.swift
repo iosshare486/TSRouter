@@ -26,7 +26,7 @@ public class TSRouter {
     public var presentDestinationViewController: ((_ destination: UIViewController)->UIViewController)?
     
     // 获取tabbar，用于切换tabbarItem
-    public var transferTabbarViewController: (()->UITabBarController)?
+    public var transferTabbarViewController: (()->UITabBarController?)?
     
     // 特殊controller跳转需要开发者自定义
     public var transferSpecialViewControllers: ((_ currentVC: UIViewController, _ path: String, _ parserDic: [String: String])->Void)?
