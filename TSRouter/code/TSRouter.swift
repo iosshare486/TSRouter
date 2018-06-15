@@ -213,7 +213,11 @@ fileprivate extension TSRouter {
             return
         }
         
-        let class_name = rule!.object(forKey: kTSRouterClassName) as! String
+        guard let class_name: String = rule!.object(forKey: kTSRouterClassName) as? String else {
+            
+            debugPrint("TSRouter: plist not have className")
+            return
+        }
         
         let cls: AnyClass? = NSClassFromString(Bundle.main.tsrouter_nameSpace + "." + class_name)
         guard let clsType = cls as? UIViewController.Type else {
@@ -232,8 +236,10 @@ fileprivate extension TSRouter {
         
         parser.destinationViewController = viewController
         
-        if let modelStr = rule!.object(forKey: kTSRouterTransferStyle) {
-            parser.transferStyle = TSRouterTransferStyle.init(rawValue: modelStr as! String)
+        if let modelStr: String = rule!.object(forKey: kTSRouterTransferStyle) as? String {
+            parser.transferStyle = TSRouterTransferStyle.init(rawValue: modelStr )
+        }else {
+            debugPrint("TSRouter: plist not have transferStyle")
         }
     }
     
@@ -328,9 +334,15 @@ fileprivate extension TSRouter {
         }
         //path
         let path = url.path
-        let startIndex = path.index(path.startIndex, offsetBy: 1)
+        if path.count > 0 {
+            
+            let startIndex = path.index(path.startIndex, offsetBy: 1)
+            
+            parser.path = String(path[startIndex..<path.endIndex])
+        }else {
+            debugPrint("TSRouter: path is nil")
+        }
         
-        parser.path = String(path[startIndex..<path.endIndex])
         
         //query -> Dictionary
         if let query = url.query {
