@@ -235,7 +235,7 @@ fileprivate extension TSRouter {
         }
         
         let viewController = clsType.init()
-        
+        viewController.hidesBottomBarWhenPushed = true
         if viewController.conforms(to: TSRouterProtocol.self) {
             
             (viewController as! TSRouterProtocol).initWithRouter(routerData: parser.URLParser)
