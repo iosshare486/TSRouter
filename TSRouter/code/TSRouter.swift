@@ -87,7 +87,7 @@ fileprivate extension TSRouter {
         if let originVC = self.transferOriginViewController?() {
             
             if originVC is UINavigationController {
-                
+                vc.hidesBottomBarWhenPushed = true
                 (originVC as! UINavigationController).pushViewController(vc, animated: animate)
             }else {
                 debugPrint("TSRouter: transferOriginViewController is not UINavigationController")
