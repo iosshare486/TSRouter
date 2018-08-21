@@ -87,7 +87,7 @@ fileprivate extension TSRouter {
         if let originVC = self.transferOriginViewController?() {
             
             if originVC is UINavigationController {
-                vc.hidesBottomBarWhenPushed = true
+                
                 (originVC as! UINavigationController).pushViewController(vc, animated: animate)
             }else {
                 debugPrint("TSRouter: transferOriginViewController is not UINavigationController")
@@ -148,10 +148,10 @@ fileprivate extension TSRouter {
     //执行跳转
     func transferViewController(with parser: TSParser) {
         
-        guard let destination = parser.destinationViewController else {
+        if parser.transferStyle == .tabTransfer {
             
-            debugPrint("TSRouter: destinationViewController is nil")
-            return
+            self.transferTabbarSelectVC(with: parser)
+            
         }
         
         guard let originViewController = parser.originViewController else {
@@ -159,6 +159,23 @@ fileprivate extension TSRouter {
             debugPrint("TSRouter: originViewController is nil")
             return
         }
+        
+        if parser.transferStyle == .specialTransfer {
+            
+            if self.transferSpecialViewControllers != nil {
+                
+                self.transferSpecialViewControllers!(originViewController, parser.host, parser.URLParser)
+            }else {
+                debugPrint("TSRouter: transferSpecialViewControllers is nil")
+            }
+        }
+        
+        guard let destination = parser.destinationViewController else {
+            
+            debugPrint("TSRouter: destinationViewController is nil")
+            return
+        }
+        
         
         if parser.transferStyle == .push {
             
@@ -183,18 +200,6 @@ fileprivate extension TSRouter {
                 }
                 
             }
-        }else if parser.transferStyle == .tabTransfer {
-            
-            self.transferTabbarSelectVC(with: parser)
-            
-        }else if parser.transferStyle == .specialTransfer {
-            
-            if self.transferSpecialViewControllers != nil {
-                
-                self.transferSpecialViewControllers!(originViewController, parser.path, parser.URLParser)
-            }else {
-                debugPrint("TSRouter: transferSpecialViewControllers is nil")
-            }
         }else {
             debugPrint("TSRouter: transferStyle is nil")
         }
@@ -207,7 +212,11 @@ fileprivate extension TSRouter {
         let filepath = Bundle.main.path(forResource: parser.path, ofType: "plist")
         let dic = NSDictionary(contentsOfFile: filepath!)
         let rule = dic?.object(forKey: parser.host) as? NSDictionary
-        
+        if let modelStr: String = rule!.object(forKey: kTSRouterTransferStyle) as? String {
+            parser.transferStyle = TSRouterTransferStyle.init(rawValue: modelStr )
+        }else {
+            debugPrint("TSRouter: plist not have transferStyle")
+        }
         if rule == nil {
             debugPrint("TSRouter: path is not find")
             return
@@ -236,21 +245,16 @@ fileprivate extension TSRouter {
         
         parser.destinationViewController = viewController
         
-        if let modelStr: String = rule!.object(forKey: kTSRouterTransferStyle) as? String {
-            parser.transferStyle = TSRouterTransferStyle.init(rawValue: modelStr )
-        }else {
-            debugPrint("TSRouter: plist not have transferStyle")
-        }
     }
     
     //获取源vc
     func getOriginViewController(with parser: inout TSParser) {
         
         if (self.transferOriginViewController != nil) {
-
+            
             parser.originViewController = self.transferOriginViewController?()
         }else {
-         
+            
             debugPrint("TSRouter: transferOriginViewController is nil")
         }
     }
@@ -398,7 +402,7 @@ public enum TSRouterTransferStyle: String {
     case present = "present"
     case tabTransfer = "transferTab" //tabbar 切换
     case specialTransfer = "specialTransfer" //特殊跳转
-
+    
 }
 
 
