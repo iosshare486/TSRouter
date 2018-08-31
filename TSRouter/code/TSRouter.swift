@@ -19,6 +19,9 @@ public class TSRouter {
     private init() {}
     private var blockedParser: TSParser?  //记录被打断的跳转数据，以备回调之后继续跳转（如未登录需要跳转登录时会被打断）
     
+    /// 存储类名的plist文件名，如果配置了则以配置为准，否则以url.path为准
+    public var moduleName: String?
+    
     // 自定义页面跳转的源vc
     public var transferOriginViewController: (()->UIViewController?)?
     
@@ -212,14 +215,14 @@ fileprivate extension TSRouter {
         let filepath = Bundle.main.path(forResource: parser.path, ofType: "plist")
         let dic = NSDictionary(contentsOfFile: filepath!)
         let rule = dic?.object(forKey: parser.host) as? NSDictionary
+        if rule == nil {
+            debugPrint("TSRouter: path is not find")
+            return
+        }
         if let modelStr: String = rule!.object(forKey: kTSRouterTransferStyle) as? String {
             parser.transferStyle = TSRouterTransferStyle.init(rawValue: modelStr )
         }else {
             debugPrint("TSRouter: plist not have transferStyle")
-        }
-        if rule == nil {
-            debugPrint("TSRouter: path is not find")
-            return
         }
         
         guard let class_name: String = rule!.object(forKey: kTSRouterClassName) as? String else {
@@ -337,16 +340,20 @@ fileprivate extension TSRouter {
             parser.host = host
         }
         //path
-        let path = url.path
-        if path.count > 0 {
-            
-            let startIndex = path.index(path.startIndex, offsetBy: 1)
-            
-            parser.path = String(path[startIndex..<path.endIndex])
+        if self.moduleName != nil {
+            parser.path = self.moduleName!
         }else {
-            debugPrint("TSRouter: path is nil")
+            
+            let path = url.path
+            if path.count > 0 {
+                
+                let startIndex = path.index(path.startIndex, offsetBy: 1)
+                
+                parser.path = String(path[startIndex..<path.endIndex])
+            }else {
+                debugPrint("TSRouter: path is nil")
+            }
         }
-        
         
         //query -> Dictionary
         if let query = url.query {
