@@ -22,6 +22,12 @@ public class TSRouter {
     /// 存储类名的plist文件名，如果配置了则以配置为准，否则以url.path为准
     public var moduleName: String?
     
+    /// scheme (如果url.scheme不是配置的会直接使用UIApplication.shared.openUrl)
+    public var scheme: String?
+    
+    /// 自定义跳转webView
+    public var transferWebViewControllers: ((_ url: String)->Void)?
+    
     // 自定义页面跳转的源vc
     public var transferOriginViewController: (()->UIViewController?)?
     
@@ -72,11 +78,33 @@ fileprivate extension TSRouter {
         //首先解析url
         if let tempStr = urlStr {
             
-            if let url = URL(string: tempStr) {
-                var parser = parserUrl(url: url)
-                configDataForTransferViewController(parser: &parser)
+            if tempStr.hasPrefix("http") {
+                //跳转webView
+                self.transferWebViewControllers?(tempStr)
             }else {
-                debugPrint("TSRouter: urlStr isnot url")
+                
+                if let url = URL(string: tempStr) {
+                    if let schemeStr = self.scheme {
+                        if tempStr.hasPrefix(schemeStr) {
+                            var parser = parserUrl(url: url)
+                            configDataForTransferViewController(parser: &parser)
+                        }
+                    }else {
+                        if UIApplication.shared.canOpenURL(url) {
+                            
+                            if #available(iOS 10.0, *) {
+                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                            } else {
+                                UIApplication.shared.openURL(url)
+                            }
+                        }
+                    }
+                    
+                }else {
+                    debugPrint("TSRouter: urlStr isnot url")
+                }
+                
+                
             }
         }else {
             
