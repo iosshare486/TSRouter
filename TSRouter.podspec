@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "TSRouter"
-  s.version      = "1.0.6"
+  s.version      = "1.0.7"
   s.summary      = "this is app router"
 
   s.description  = <<-DESC
