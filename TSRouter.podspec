@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "TSRouter"
-  s.version      = "1.0.7"
+  s.version      = "2.0.0"
   s.summary      = "this is app router"
 
   s.description  = <<-DESC
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
 
   s.framework  = "UIKit","Foundation"
 
-  s.swift_version = '4.0'
+  s.swift_version = '4.2'
 
   s.requires_arc = true
 end
