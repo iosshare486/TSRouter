@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    private func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
@@ -22,20 +22,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let vc1 = MJNavController(rootViewController: Tabbar1ViewController())
         let awardItem = UITabBarItem(title: "预测", image: nil, selectedImage: nil)
-        awardItem.setTitleTextAttributes([NSAttributedStringKey.font : UIFont.systemFont(ofSize: 12)], for: .normal)
-        awardItem.setTitleTextAttributes([NSAttributedStringKey.font: UIFont.systemFont(ofSize: 15)], for: .selected)
+        awardItem.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)], for: .normal)
+        awardItem.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15)], for: .selected)
         vc1.tabBarItem = awardItem
         
         let vc2 = MJNavController(rootViewController: Tabbar2ViewController())
         let awardItem2 = UITabBarItem(title: "预测1", image: nil, selectedImage: nil)
-        awardItem2.setTitleTextAttributes([NSAttributedStringKey.font : UIFont.systemFont(ofSize: 12)], for: .normal)
-        awardItem2.setTitleTextAttributes([NSAttributedStringKey.font: UIFont.systemFont(ofSize: 15)], for: .selected)
+        awardItem2.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)], for: .normal)
+        awardItem2.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15)], for: .selected)
         vc2.tabBarItem = awardItem2
         
         let vc3 = MJNavController(rootViewController: Tabbar3ViewController())
         let awardItem3 = UITabBarItem(title: "预测2", image: nil, selectedImage: nil)
-        awardItem3.setTitleTextAttributes([NSAttributedStringKey.font : UIFont.systemFont(ofSize: 12)], for: .normal)
-        awardItem3.setTitleTextAttributes([NSAttributedStringKey.font: UIFont.systemFont(ofSize: 15)], for: .selected)
+        awardItem3.setTitleTextAttributes([NSAttributedString.Key.font : UIFont.systemFont(ofSize: 12)], for: .normal)
+        awardItem3.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15)], for: .selected)
         vc3.tabBarItem = awardItem3
         
         tabbar.viewControllers = [vc1, vc2, vc3]

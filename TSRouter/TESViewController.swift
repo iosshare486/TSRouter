@@ -20,7 +20,7 @@ class TSTestViewController: UIViewController {
         
         let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 100))
         button.backgroundColor = .red
-        button.addTarget(self, action: #selector(buttonOnClick), for: UIControlEvents.touchUpInside)
+        button.addTarget(self, action: #selector(buttonOnClick), for: UIControl.Event.touchUpInside)
         view.addSubview(button)
         // Do any additional setup after loading the view.
     }
