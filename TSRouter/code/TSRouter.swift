@@ -61,6 +61,18 @@ public class TSRouter {
         TSRouter.shared.routerPresentVC(vc, animate, completion: completion)
     }
     
+    //pop
+    public class func routerPop(animate: Bool = true) {
+        
+        TSRouter.shared.routerPop(animate: animate)
+    }
+    
+    //dismiss
+    public class func routerDismiss(animated: Bool, completion: (() -> Void)?) {
+        
+        TSRouter.shared.routerDismiss(animated: animated, completion: completion)
+    }
+    
     //继续跳转 当跳转被打断后，调用该方法会继续上次的跳转
     public class func continueRouter() {
         
@@ -134,6 +146,33 @@ fileprivate extension TSRouter {
         if let originVC = self.transferOriginViewController?() {
             
             originVC.present(vc, animated: animate, completion: completion)
+        }else {
+            debugPrint("TSRouter: transferOriginViewController is nil")
+        }
+    }
+    
+    //pop
+    func routerPop(animate: Bool = true) {
+        
+        if let originVC = self.transferOriginViewController?() {
+            
+            if originVC is UINavigationController {
+                
+                (originVC as! UINavigationController).popViewController(animated: animate)
+            }else {
+                debugPrint("TSRouter: transferOriginViewController is not UINavigationController")
+            }
+        }else {
+            debugPrint("TSRouter: transferOriginViewController is nil")
+        }
+    }
+    
+    //dismiss
+    func routerDismiss(animated: Bool, completion: (() -> Void)?) {
+        
+        if let originVC = self.transferOriginViewController?() {
+            
+            originVC.dismiss(animated: animated, completion: completion)
         }else {
             debugPrint("TSRouter: transferOriginViewController is nil")
         }
